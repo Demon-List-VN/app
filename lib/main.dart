@@ -1,122 +1,172 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ForuiApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+enum ThemePreference { system, light, dark }
 
-  // This widget is the root of your application.
+class ForuiApp extends StatefulWidget {
+  const ForuiApp({super.key});
+
+  @override
+  State<ForuiApp> createState() => _ForuiAppState();
+}
+
+class _ForuiAppState extends State<ForuiApp> {
+  ThemePreference _themePreference = ThemePreference.system;
+
+  FThemeData get _lightTheme => FThemes.neutral.light.touch;
+
+  FThemeData get _darkTheme => FThemes.neutral.dark.touch;
+
+  ThemeMode get _materialThemeMode {
+    switch (_themePreference) {
+      case ThemePreference.system:
+        return ThemeMode.system;
+      case ThemePreference.light:
+        return ThemeMode.light;
+      case ThemePreference.dark:
+        return ThemeMode.dark;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+      debugShowCheckedModeBanner: false,
+      title: 'GDVN',
+      theme: _lightTheme.toApproximateMaterialTheme(),
+      darkTheme: _darkTheme.toApproximateMaterialTheme(),
+      themeMode: _materialThemeMode,
+      home: Builder(
+        builder: (context) {
+          final Brightness brightness = switch (_themePreference) {
+            ThemePreference.system => MediaQuery.platformBrightnessOf(context),
+            ThemePreference.light => Brightness.light,
+            ThemePreference.dark => Brightness.dark,
+          };
+
+          final FThemeData currentTheme =
+              brightness == Brightness.dark ? _darkTheme : _lightTheme;
+
+          return FTheme(
+            data: currentTheme,
+            child: HomeScreen(
+              themePreference: _themePreference,
+              onThemeChanged: (value) {
+                setState(() {
+                  _themePreference = value;
+                });
+              },
+            ),
+          );
+        },
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({
+    super.key,
+    required this.themePreference,
+    required this.onThemeChanged,
+  });
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  final ThemePreference themePreference;
+  final ValueChanged<ThemePreference> onThemeChanged;
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    final FThemeData theme = FTheme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: const Text('GDVN'),
+        centerTitle: false,
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 720),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'ForUI starter',
+                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'A minimal boilerplate with a live light and dark theme switch.',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 24),
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: theme.colors.card,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: theme.colors.border),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SegmentedButton<ThemePreference>(
+                          segments: const [
+                            ButtonSegment<ThemePreference>(
+                              value: ThemePreference.system,
+                              icon: Icon(Icons.phone_iphone),
+                              label: SizedBox.shrink(),
+                            ),
+                            ButtonSegment<ThemePreference>(
+                              value: ThemePreference.light,
+                              icon: Icon(Icons.light_mode),
+                              label: SizedBox.shrink(),
+                            ),
+                            ButtonSegment<ThemePreference>(
+                              value: ThemePreference.dark,
+                              icon: Icon(Icons.dark_mode),
+                              label: SizedBox.shrink(),
+                            ),
+                          ],
+                          selected: <ThemePreference>{themePreference},
+                          onSelectionChanged: (selection) {
+                            onThemeChanged(selection.first);
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        Wrap(
+                          spacing: 12,
+                          runSpacing: 12,
+                          children: [
+                            FButton(
+                              onPress: () {},
+                              child: const Text('Primary action'),
+                            ),
+                            OutlinedButton(
+                              onPressed: () {},
+                              child: const Text('Secondary action'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
+
 }
