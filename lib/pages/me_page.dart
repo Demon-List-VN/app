@@ -9,8 +9,8 @@ class MePage extends StatelessWidget {
 
   void _openSettings(BuildContext context) {
     Navigator.of(context).push<void>(
-      PageRouteBuilder<void>(
-        pageBuilder: (context, animation, secondaryAnimation) => const SettingsPage(),
+      CupertinoPageRoute<void>(
+        builder: (context) => const SettingsPage(),
       ),
     );
   }
