@@ -24,7 +24,7 @@ class _AppShellState extends State<AppShell> {
   static const _leftItems = [
     NavItemConfig(
       icon: FIcons.layoutDashboard,
-      label: 'Dashboard',
+      label: 'Trang chủ',
       page: DashboardPage(),
     ),
     NavItemConfig(
@@ -37,12 +37,12 @@ class _AppShellState extends State<AppShell> {
   static const _rightItems = [
     NavItemConfig(
       icon: FIcons.bell,
-      label: 'Notification',
+      label: 'Thông báo',
       page: NotificationPage(),
     ),
     NavItemConfig(
       icon: FIcons.user,
-      label: 'Me',
+      label: 'Tôi',
       page: MePage(),
     ),
   ];
