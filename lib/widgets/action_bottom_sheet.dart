@@ -1,10 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 
-enum ActionBottomSheetDestination {
-  submitRecord,
-  submitLevelChallenge,
-}
+enum ActionBottomSheetDestination { submitRecord, submitLevelChallenge }
 
 Widget _buildCard({
   required BuildContext context,
@@ -55,6 +52,13 @@ Future<ActionBottomSheetDestination?> showActionBottomSheet(
   return showFSheet<ActionBottomSheetDestination>(
     context: context,
     side: FLayout.btt,
+    style: const FModalSheetStyleDelta.delta(
+      motion: FModalSheetMotionDelta.delta(
+        expandDuration: Duration(milliseconds: 260),
+        collapseDuration: Duration(milliseconds: 220),
+        curve: Curves.easeOutCubic,
+      ),
+    ),
     builder: (sheetContext) {
       return Builder(
         builder: (context) {
@@ -78,16 +82,17 @@ Future<ActionBottomSheetDestination?> showActionBottomSheet(
                         icon: FIcons.fileText,
                         title: 'Nộp bản ghi',
                         subtitle: 'Nộp kết quả chơi level Insane Demon trở lên',
-                        onTap: () => Navigator.of(sheetContext).pop(
-                          ActionBottomSheetDestination.submitRecord,
-                        ),
+                        onTap: () => Navigator.of(
+                          sheetContext,
+                        ).pop(ActionBottomSheetDestination.submitRecord),
                       ),
                       const SizedBox(height: 12),
                       _buildCard(
                         context: context,
                         icon: FIcons.trophy,
                         title: 'Nộp level challenge',
-                        subtitle: 'Đề xuất thêm challenge level mới vào danh sách',
+                        subtitle:
+                            'Đề xuất thêm challenge level mới vào danh sách',
                         onTap: () => Navigator.of(sheetContext).pop(
                           ActionBottomSheetDestination.submitLevelChallenge,
                         ),
