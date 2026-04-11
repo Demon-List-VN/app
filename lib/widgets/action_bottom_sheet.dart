@@ -3,48 +3,18 @@ import 'package:forui/forui.dart';
 
 enum ActionBottomSheetDestination { submitRecord, submitLevelChallenge }
 
-Widget _buildCard({
-  required BuildContext context,
+FTile _buildTile({
   required IconData icon,
   required String title,
   required String subtitle,
-  required VoidCallback onTap,
+  required VoidCallback onPress,
 }) {
-  final theme = context.theme;
-  final contentStyle = theme.cardStyle.contentStyle;
-  final borderColor = theme.colors.border;
-  final foregroundColor =
-      contentStyle.titleTextStyle.color ?? theme.colors.foreground;
-
-  return GestureDetector(
-    onTap: onTap,
-    child: FCard.raw(
-      style: FCardStyleDelta.delta(
-        decoration: DecorationDelta.boxDelta(
-          border: Border.all(color: borderColor),
-        ),
-      ),
-      child: Padding(
-        padding: contentStyle.padding,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(icon, color: foregroundColor, size: 48),
-            SizedBox(height: contentStyle.imageSpacing),
-            DefaultTextStyle.merge(
-              style: contentStyle.titleTextStyle,
-              child: Text(title),
-            ),
-            SizedBox(height: contentStyle.titleSpacing),
-            DefaultTextStyle.merge(
-              style: contentStyle.subtitleTextStyle,
-              child: Text(subtitle, textAlign: TextAlign.center),
-            ),
-          ],
-        ),
-      ),
-    ),
+  return FTile(
+    prefix: Icon(icon),
+    title: Text(title),
+    subtitle: Text(subtitle),
+    suffix: const Icon(FIcons.chevronRight),
+    onPress: onPress,
   );
 }
 
@@ -84,30 +54,32 @@ Future<ActionBottomSheetDestination?> showActionBottomSheet(
               child: SafeArea(
                 top: false,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                  padding: const EdgeInsets.fromLTRB(10, 12, 10, 24),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      _buildCard(
-                        context: context,
-                        icon: FIcons.fileText,
-                        title: 'Nộp bản ghi',
-                        subtitle: 'Nộp kết quả chơi level Insane Demon trở lên',
-                        onTap: () => Navigator.of(
-                          sheetContext,
-                        ).pop(ActionBottomSheetDestination.submitRecord),
-                      ),
-                      const SizedBox(height: 12),
-                      _buildCard(
-                        context: context,
-                        icon: FIcons.trophy,
-                        title: 'Nộp level challenge',
-                        subtitle:
-                            'Đề xuất thêm challenge level mới vào danh sách',
-                        onTap: () => Navigator.of(sheetContext).pop(
-                          ActionBottomSheetDestination.submitLevelChallenge,
-                        ),
+                      FTileGroup(
+                        children: [
+                          _buildTile(
+                            icon: FIcons.fileText,
+                            title: 'Nộp bản ghi',
+                            subtitle:
+                                'Nộp kết quả chơi level Insane Demon trở lên',
+                            onPress: () => Navigator.of(
+                              sheetContext,
+                            ).pop(ActionBottomSheetDestination.submitRecord),
+                          ),
+                          _buildTile(
+                            icon: FIcons.trophy,
+                            title: 'Nộp level challenge',
+                            subtitle:
+                                'Đề xuất thêm challenge level mới vào danh sách',
+                            onPress: () => Navigator.of(sheetContext).pop(
+                              ActionBottomSheetDestination.submitLevelChallenge,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
