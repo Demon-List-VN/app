@@ -13,6 +13,8 @@ Widget _buildCard({
   final theme = context.theme;
   final contentStyle = theme.cardStyle.contentStyle;
   final borderColor = theme.colors.border;
+  final foregroundColor =
+      contentStyle.titleTextStyle.color ?? theme.colors.foreground;
 
   return GestureDetector(
     onTap: onTap,
@@ -28,7 +30,7 @@ Widget _buildCard({
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(icon, size: 48),
+            Icon(icon, color: foregroundColor, size: 48),
             SizedBox(height: contentStyle.imageSpacing),
             DefaultTextStyle.merge(
               style: contentStyle.titleTextStyle,
@@ -62,13 +64,23 @@ Future<ActionBottomSheetDestination?> showActionBottomSheet(
     builder: (sheetContext) {
       return Builder(
         builder: (context) {
-          return ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
+          final theme = context.theme;
+          final borderRadius = const BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          );
+
+          return DecoratedBox(
+            decoration: BoxDecoration(
+              color: theme.colors.card,
+              border: Border.all(
+                color: theme.colors.border,
+                width: theme.style.borderWidth,
+              ),
+              borderRadius: borderRadius,
             ),
-            child: ColoredBox(
-              color: context.theme.colors.background,
+            child: ClipRRect(
+              borderRadius: borderRadius,
               child: SafeArea(
                 top: false,
                 child: Padding(

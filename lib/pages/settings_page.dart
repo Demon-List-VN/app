@@ -29,7 +29,10 @@ class SettingsPage extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 24),
                     child: Text(
                       'Cài đặt',
-                      style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -43,36 +46,54 @@ class SettingsPage extends StatelessWidget {
                     child: ValueListenableBuilder<AppThemeMode>(
                       valueListenable: themeController,
                       builder: (context, themeMode, _) {
-                        return SettingsGroupCard(
-                          header: 'Giao diện',
-                          footer: 'Chọn chế độ sáng tối cho ứng dụng.',
+                        return FSelectTileGroup<AppThemeMode>(
+                          control: FMultiValueControl.managedRadio(
+                            initial: themeMode,
+                            onChange: (selection) {
+                              if (selection.isEmpty) {
+                                return;
+                              }
+
+                              themeController.value = selection.first;
+                            },
+                          ),
+                          label: const Text('Giao diện'),
+                          description: const Text(
+                            'Chọn chế độ sáng tối cho ứng dụng.',
+                          ),
                           children: [
-                            SettingsRowTile(
-                              title: 'Theo hệ thống',
-                              leading: const SettingsLeadingIcon(
+                            const FSelectTile<AppThemeMode>.suffix(
+                              value: AppThemeMode.system,
+                              prefix: SettingsLeadingIcon(
                                 icon: CupertinoIcons.device_phone_portrait,
                                 backgroundColor: Color(0xFF34C759),
                               ),
-                              selected: themeMode == AppThemeMode.system,
-                              onTap: () => themeController.value = AppThemeMode.system,
+                              title: Text('Theo hệ thống'),
+                              subtitle: Text(
+                                'Tự động theo giao diện của thiết bị',
+                              ),
                             ),
-                            SettingsRowTile(
-                              title: 'Tối',
-                              leading: const SettingsLeadingIcon(
+                            const FSelectTile<AppThemeMode>.suffix(
+                              value: AppThemeMode.dark,
+                              prefix: SettingsLeadingIcon(
                                 icon: CupertinoIcons.moon_fill,
                                 backgroundColor: Color(0xFF5856D6),
                               ),
-                              selected: themeMode == AppThemeMode.dark,
-                              onTap: () => themeController.value = AppThemeMode.dark,
+                              title: Text('Tối'),
+                              subtitle: Text(
+                                'Luôn dùng giao diện tối trong ứng dụng',
+                              ),
                             ),
-                            SettingsRowTile(
-                              title: 'Sáng',
-                              leading: const SettingsLeadingIcon(
+                            const FSelectTile<AppThemeMode>.suffix(
+                              value: AppThemeMode.light,
+                              prefix: SettingsLeadingIcon(
                                 icon: CupertinoIcons.sun_max_fill,
                                 backgroundColor: Color(0xFFFF9F0A),
                               ),
-                              selected: themeMode == AppThemeMode.light,
-                              onTap: () => themeController.value = AppThemeMode.light,
+                              title: Text('Sáng'),
+                              subtitle: Text(
+                                'Luôn dùng giao diện sáng trong ứng dụng',
+                              ),
                             ),
                           ],
                         );

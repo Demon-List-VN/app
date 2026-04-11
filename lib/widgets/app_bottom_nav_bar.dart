@@ -33,12 +33,10 @@ class AppBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark =
-        MediaQuery.platformBrightnessOf(context) == Brightness.dark;
-    final actionBgColor =
-        isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000);
-    final actionFgColor =
-        isDark ? const Color(0xFF000000) : const Color(0xFFFFFFFF);
+    final theme = context.theme;
+    final actionColor =
+        theme.bottomNavigationBarStyle.itemStyle.iconStyle.base.color ??
+        theme.colors.mutedForeground;
 
     return FBottomNavigationBar(
       index: selectedIndex,
@@ -57,23 +55,10 @@ class AppBottomNavBar extends StatelessWidget {
           ),
         ),
         FBottomNavigationBarItem(
-          icon: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: actionBgColor,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text(
-                '+',
-                style: TextStyle(
-                  color: actionFgColor,
-                  fontSize: 26,
-                  fontWeight: FontWeight.w300,
-                  height: 1.0,
-                ),
-              ),
+          icon: SizedBox.square(
+            dimension: 40,
+            child: CustomPaint(
+              painter: _TransparentPlusButtonPainter(color: actionColor),
             ),
           ),
           label: const SizedBox.shrink(),
@@ -98,5 +83,71 @@ class AppBottomNavBar extends StatelessWidget {
     }
     final rightIndex = selectedIndex - actionButtonIndex - 1;
     return rightItems[rightIndex].page;
+  }
+}
+
+class _TransparentPlusButtonPainter extends CustomPainter {
+  const _TransparentPlusButtonPainter({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final bounds = Offset.zero & size;
+    final center = bounds.center;
+    final plusHalfLength = size.shortestSide * 0.17;
+    final plusThickness = size.shortestSide * 0.055;
+    final plusRadius = Radius.circular(plusThickness / 2);
+
+    final circlePath = Path()
+      ..addOval(Rect.fromCircle(center: center, radius: size.shortestSide / 2));
+
+    final horizontalBar = Path()
+      ..addRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: center,
+            width: plusHalfLength * 2,
+            height: plusThickness,
+          ),
+          plusRadius,
+        ),
+      );
+
+    final verticalBar = Path()
+      ..addRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: center,
+            width: plusThickness,
+            height: plusHalfLength * 2,
+          ),
+          plusRadius,
+        ),
+      );
+
+    final plusPath = Path.combine(
+      PathOperation.union,
+      horizontalBar,
+      verticalBar,
+    );
+
+    final buttonPath = Path.combine(
+      PathOperation.difference,
+      circlePath,
+      plusPath,
+    );
+
+    canvas.drawPath(
+      buttonPath,
+      Paint()
+        ..color = color
+        ..isAntiAlias = true,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _TransparentPlusButtonPainter oldDelegate) {
+    return oldDelegate.color != color;
   }
 }

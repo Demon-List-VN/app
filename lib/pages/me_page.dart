@@ -9,9 +9,7 @@ class MePage extends StatelessWidget {
 
   void _openSettings(BuildContext context) {
     Navigator.of(context).push<void>(
-      CupertinoPageRoute<void>(
-        builder: (context) => const SettingsPage(),
-      ),
+      CupertinoPageRoute<void>(builder: (context) => const SettingsPage()),
     );
   }
 
@@ -24,17 +22,17 @@ class MePage extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: SettingsGroupCard(
+              child: FTileGroup(
                 children: [
-                  SettingsRowTile(
-                    title: 'Cài đặt',
-                    subtitle: 'Giao diện và các tuỳ chọn ứng dụng',
-                    leading: const SettingsLeadingIcon(
+                  FTile(
+                    prefix: const SettingsLeadingIcon(
                       icon: CupertinoIcons.gear_alt_fill,
                       backgroundColor: Color(0xFF8E8E93),
                     ),
-                    showChevron: true,
-                    onTap: () => _openSettings(context),
+                    title: const Text('Cài đặt'),
+                    subtitle: const Text('Giao diện và các tuỳ chọn ứng dụng'),
+                    suffix: const Icon(FIcons.chevronRight),
+                    onPress: () => _openSettings(context),
                   ),
                 ],
               ),
