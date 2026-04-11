@@ -76,7 +76,7 @@ class AppBottomNavBar extends StatelessWidget {
               ),
             ),
           ),
-          label: const Text(''),
+          label: const SizedBox.shrink(),
         ),
         ...rightItems.map(
           (item) => FBottomNavigationBarItem(
