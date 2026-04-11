@@ -33,6 +33,13 @@ class AppBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark =
+        MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+    final actionBgColor =
+        isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000);
+    final actionFgColor =
+        isDark ? const Color(0xFF000000) : const Color(0xFFFFFFFF);
+
     return FBottomNavigationBar(
       index: selectedIndex,
       onChange: (index) {
@@ -50,8 +57,26 @@ class AppBottomNavBar extends StatelessWidget {
           ),
         ),
         FBottomNavigationBarItem(
-          icon: Icon(FIcons.circlePlus, size: 28),
-          label: const Text('Action'),
+          icon: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: actionBgColor,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                '+',
+                style: TextStyle(
+                  color: actionFgColor,
+                  fontSize: 26,
+                  fontWeight: FontWeight.w300,
+                  height: 1.0,
+                ),
+              ),
+            ),
+          ),
+          label: const Text(''),
         ),
         ...rightItems.map(
           (item) => FBottomNavigationBarItem(

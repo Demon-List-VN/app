@@ -1,27 +1,41 @@
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 
-Future<void> showActionBottomSheet(BuildContext context) {
-  return showFSheet(
+enum ActionBottomSheetDestination {
+  submitRecord,
+  submitLevelChallenge,
+}
+
+Future<ActionBottomSheetDestination?> showActionBottomSheet(
+  BuildContext context,
+) {
+  return showFSheet<ActionBottomSheetDestination>(
     context: context,
     side: FLayout.btt,
-    builder: (context) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            FTile(
-              title: const Text('Nộp bản ghi'),
-              prefix: const Icon(FIcons.fileText),
-              onPress: () => Navigator.of(context).pop(),
-            ),
-            FTile(
-              title: const Text('Nộp level challenge'),
-              prefix: const Icon(FIcons.trophy),
-              onPress: () => Navigator.of(context).pop(),
-            ),
-          ],
+    builder: (sheetContext) {
+      return SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+          child: FTileGroup(
+            intrinsicWidth: true,
+            children: [
+              FTile(
+                prefix: const Icon(FIcons.fileText),
+                title: const Text('Nộp bản ghi'),
+                onPress: () => Navigator.of(sheetContext).pop(
+                  ActionBottomSheetDestination.submitRecord,
+                ),
+              ),
+              FTile(
+                prefix: const Icon(FIcons.trophy),
+                title: const Text('Nộp level challenge'),
+                onPress: () => Navigator.of(sheetContext).pop(
+                  ActionBottomSheetDestination.submitLevelChallenge,
+                ),
+              ),
+            ],
+          ),
         ),
       );
     },
