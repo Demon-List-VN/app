@@ -5,8 +5,8 @@ import 'package:gdvn/pages/dashboard_page.dart';
 import 'package:gdvn/pages/list_page.dart';
 import 'package:gdvn/pages/me_page.dart';
 import 'package:gdvn/pages/notification_page.dart';
-import 'package:gdvn/pages/submit_level_challenge_page.dart';
-import 'package:gdvn/pages/submit_record_page.dart';
+import 'package:gdvn/sheets/submit_level_challenge_sheet.dart';
+import 'package:gdvn/sheets/submit_record_sheet.dart';
 import 'package:gdvn/widgets/action_bottom_sheet.dart';
 import 'package:gdvn/widgets/app_bottom_nav_bar.dart';
 
@@ -19,7 +19,6 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0;
-  ActionBottomSheetDestination? _selectedAction;
 
   static const _leftItems = [
     NavItemConfig(
@@ -27,11 +26,7 @@ class _AppShellState extends State<AppShell> {
       label: 'Trang chủ',
       page: DashboardPage(),
     ),
-    NavItemConfig(
-      icon: FIcons.list,
-      label: 'List',
-      page: ListPage(),
-    ),
+    NavItemConfig(icon: FIcons.list, label: 'List', page: ListPage()),
   ];
 
   static const _rightItems = [
@@ -40,11 +35,7 @@ class _AppShellState extends State<AppShell> {
       label: 'Thông báo',
       page: NotificationPage(),
     ),
-    NavItemConfig(
-      icon: FIcons.user,
-      label: 'Tôi',
-      page: MePage(),
-    ),
+    NavItemConfig(icon: FIcons.user, label: 'Tôi', page: MePage()),
   ];
 
   Future<void> _handleActionPressed() async {
@@ -53,21 +44,11 @@ class _AppShellState extends State<AppShell> {
       return;
     }
 
-    setState(() => _selectedAction = action);
-  }
-
-  Widget _currentPage() {
-    switch (_selectedAction) {
+    switch (action) {
       case ActionBottomSheetDestination.submitRecord:
-        return const SubmitRecordPage();
+        await showSubmitRecordSheet(context);
       case ActionBottomSheetDestination.submitLevelChallenge:
-        return const SubmitLevelChallengePage();
-      case null:
-        return AppBottomNavBar.getPage(
-          selectedIndex: _selectedIndex,
-          leftItems: _leftItems,
-          rightItems: _rightItems,
-        );
+        await showSubmitLevelChallengeSheet(context);
     }
   }
 
@@ -75,18 +56,19 @@ class _AppShellState extends State<AppShell> {
   Widget build(BuildContext context) {
     return FScaffold(
       footer: AppBottomNavBar(
-        selectedIndex: _selectedAction == null ? _selectedIndex : actionButtonIndex,
+        selectedIndex: _selectedIndex,
         onItemSelected: (index) {
-          setState(() {
-            _selectedIndex = index;
-            _selectedAction = null;
-          });
+          setState(() => _selectedIndex = index);
         },
         onActionPressed: _handleActionPressed,
         leftItems: _leftItems,
         rightItems: _rightItems,
       ),
-      child: _currentPage(),
+      child: AppBottomNavBar.getPage(
+        selectedIndex: _selectedIndex,
+        leftItems: _leftItems,
+        rightItems: _rightItems,
+      ),
     );
   }
 }
