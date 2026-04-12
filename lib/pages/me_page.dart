@@ -21,7 +21,7 @@ class MePage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 24),
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: EdgeInsets.symmetric(horizontal: 0),
               child: FTileGroup(
                 children: [
                   FTile(

@@ -5,7 +5,7 @@ import 'package:gdvn/theme/app_theme.dart';
 import 'package:gdvn/widgets/page_back_button.dart';
 import 'package:gdvn/widgets/settings_group_card.dart';
 
-const double _settingsHorizontalPadding = 10;
+const double _horizontalPadding = 10;
 
 String _themeModeLabel(AppThemeMode themeMode) {
   return switch (themeMode) {
@@ -31,7 +31,7 @@ class SettingsPage extends StatelessWidget {
               children: [
                 const Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: _settingsHorizontalPadding,
+                    horizontal: _horizontalPadding,
                   ),
                   child: Text(
                     'Cài đặt',
@@ -39,16 +39,10 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: _settingsHorizontalPadding,
-                  ),
-                  child: Text('Tùy chỉnh giao diện ứng dụng.'),
-                ),
                 const SizedBox(height: 24),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: _settingsHorizontalPadding,
+                    horizontal: _horizontalPadding,
                   ),
                   child: ValueListenableBuilder<AppThemeMode>(
                     valueListenable: themeController,
@@ -121,7 +115,7 @@ class SettingsPage extends StatelessWidget {
               ],
             ),
             const Positioned(
-              left: _settingsHorizontalPadding,
+              left: _horizontalPadding,
               top: 12,
               child: PageBackButton(),
             ),
