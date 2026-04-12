@@ -6,15 +6,29 @@ const BorderRadius _sheetBorderRadius = BorderRadius.only(
   topRight: Radius.circular(24),
 );
 
+class SubmitSheetDialogConfig {
+  const SubmitSheetDialogConfig({
+    required this.sectionTitle,
+    required this.sectionDescription,
+    required this.buttonLabel,
+    required this.title,
+    required this.description,
+  });
+
+  final String sectionTitle;
+  final String sectionDescription;
+  final String buttonLabel;
+  final String title;
+  final String description;
+}
+
 Future<void> showSubmitSheet(
   BuildContext context, {
-  required IconData icon,
-  required String title,
-  required String subtitle,
+  required List<String> steps,
+  required int currentStep,
   required String placeholderTitle,
   required String placeholderDescription,
-  required String dialogTitle,
-  required String dialogDescription,
+  required SubmitSheetDialogConfig dialog,
 }) async {
   await showFSheet<void>(
     context: context,
@@ -30,36 +44,39 @@ Future<void> showSubmitSheet(
     ),
     builder: (sheetContext) {
       return _SubmitSheet(
-        icon: icon,
-        title: title,
-        subtitle: subtitle,
+        steps: steps,
+        currentStep: currentStep,
         placeholderTitle: placeholderTitle,
         placeholderDescription: placeholderDescription,
-        dialogTitle: dialogTitle,
-        dialogDescription: dialogDescription,
+        dialog: dialog,
       );
     },
   );
 }
 
 class _SubmitSheet extends StatelessWidget {
-  const _SubmitSheet({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.placeholderTitle,
-    required this.placeholderDescription,
-    required this.dialogTitle,
-    required this.dialogDescription,
-  });
+  _SubmitSheet({
+    this.steps = const ['Loại'],
+    this.currentStep = 1,
+    this.placeholderTitle = 'Form submit',
+    this.placeholderDescription =
+        'Giữ chỗ cho nội dung form khi hot reload đang dùng state cũ.',
+    this.dialog = const SubmitSheetDialogConfig(
+      sectionTitle: 'Dialog',
+      sectionDescription:
+          'Giữ chỗ cho dialog khi hot reload đang dùng state cũ.',
+      buttonLabel: 'Mở dialog',
+      title: 'Dialog placeholder',
+      description: 'Nội dung dialog mặc định.',
+    ),
+  }) : assert(steps.isNotEmpty),
+       assert(1 <= currentStep && currentStep <= steps.length);
 
-  final IconData icon;
-  final String title;
-  final String subtitle;
+  final List<String> steps;
+  final int currentStep;
   final String placeholderTitle;
   final String placeholderDescription;
-  final String dialogTitle;
-  final String dialogDescription;
+  final SubmitSheetDialogConfig dialog;
 
   @override
   Widget build(BuildContext context) {
@@ -104,49 +121,7 @@ class _SubmitSheet extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 18),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        DecoratedBox(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: theme.colors.border,
-                              width: theme.style.borderWidth,
-                            ),
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(14),
-                            child: Icon(icon),
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                title,
-                                style: TextStyle(
-                                  color: theme.colors.foreground,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                subtitle,
-                                style: TextStyle(
-                                  color: theme.colors.mutedForeground,
-                                  fontSize: 14,
-                                  height: 1.45,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                    _SubmitSheetStepper(steps: steps, currentStep: currentStep),
                     const SizedBox(height: 24),
                     _SubmitSectionCard(
                       title: placeholderTitle,
@@ -156,32 +131,26 @@ class _SubmitSheet extends StatelessWidget {
                         children: const [
                           _PlaceholderField(label: 'Tên'),
                           SizedBox(height: 12),
-                          _PlaceholderField(
-                            label: 'Link video hoặc chứng cứ',
-                          ),
+                          _PlaceholderField(label: 'Link video hoặc chứng cứ'),
                           SizedBox(height: 12),
-                          _PlaceholderField(
-                            label: 'Ghi chú thêm',
-                            lines: 4,
-                          ),
+                          _PlaceholderField(label: 'Ghi chú thêm', lines: 4),
                         ],
                       ),
                     ),
                     const SizedBox(height: 16),
                     _SubmitSectionCard(
-                      title: 'Dialog placeholder',
-                      description:
-                          'Nút bên dưới mở một Forui dialog để giữ chỗ cho xác nhận, hướng dẫn hoặc trạng thái hoàn tất.',
+                      title: dialog.sectionTitle,
+                      description: dialog.sectionDescription,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           FButton(
                             onPress: () => _showPlaceholderDialog(
                               context,
-                              title: dialogTitle,
-                              description: dialogDescription,
+                              title: dialog.title,
+                              description: dialog.description,
                             ),
-                            child: const Text('Mở dialog placeholder'),
+                            child: Text(dialog.buttonLabel),
                           ),
                         ],
                       ),
@@ -193,6 +162,133 @@ class _SubmitSheet extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _SubmitSheetStepper extends StatelessWidget {
+  const _SubmitSheetStepper({required this.steps, required this.currentStep});
+
+  final List<String> steps;
+  final int currentStep;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final estimatedMinWidth =
+            (steps.length * 88) + ((steps.length - 1) * 40);
+        final width = constraints.maxWidth < estimatedMinWidth
+            ? estimatedMinWidth.toDouble()
+            : constraints.maxWidth;
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          clipBehavior: Clip.none,
+          child: SizedBox(
+            width: width,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (var index = 0; index < steps.length; index++) ...[
+                  Expanded(
+                    flex: 11,
+                    child: _SubmitSheetStepItem(
+                      index: index,
+                      label: steps[index],
+                      isActive: currentStep == index + 1,
+                    ),
+                  ),
+                  if (index != steps.length - 1)
+                    Expanded(
+                      flex: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: theme.colors.border,
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: const SizedBox(height: 2),
+                        ),
+                      ),
+                    ),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _SubmitSheetStepItem extends StatelessWidget {
+  const _SubmitSheetStepItem({
+    required this.index,
+    required this.label,
+    required this.isActive,
+  });
+
+  final int index;
+  final String label;
+  final bool isActive;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final circleColor = isActive
+        ? theme.colors.foreground
+        : theme.colors.background;
+    final circleTextColor = isActive
+        ? theme.colors.background
+        : theme.colors.mutedForeground;
+    final labelColor = isActive
+        ? theme.colors.foreground
+        : theme.colors.mutedForeground;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: circleColor,
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: theme.colors.border,
+              width: theme.style.borderWidth,
+            ),
+          ),
+          child: SizedBox(
+            width: 42,
+            height: 42,
+            child: Center(
+              child: Text(
+                '${index + 1}',
+                style: TextStyle(
+                  color: circleTextColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: labelColor,
+            fontSize: 14,
+            fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 }
