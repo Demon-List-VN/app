@@ -24,117 +24,106 @@ class SettingsPage extends StatelessWidget {
 
     return FScaffold(
       child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(
-                _settingsHorizontalPadding,
-                12,
-                _settingsHorizontalPadding,
-                0,
-              ),
-              child: PageBackButton(),
-            ),
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(0, 16, 0, 24),
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: _settingsHorizontalPadding,
-                    ),
-                    child: Text(
-                      'Cài đặt',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+            ListView(
+              padding: const EdgeInsets.fromLTRB(0, 72, 0, 24),
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: _settingsHorizontalPadding,
                   ),
-                  const SizedBox(height: 8),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: _settingsHorizontalPadding,
-                    ),
-                    child: Text('Tùy chỉnh giao diện ứng dụng.'),
+                  child: Text(
+                    'Cài đặt',
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
                   ),
-                  const SizedBox(height: 24),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: _settingsHorizontalPadding,
-                    ),
-                    child: ValueListenableBuilder<AppThemeMode>(
-                      valueListenable: themeController,
-                      builder: (context, themeMode, _) {
-                        return FTileGroup(
-                          children: [
-                            FSelectMenuTile<AppThemeMode>(
-                              selectControl: FMultiValueControl.managedRadio(
-                                initial: themeMode,
-                                onChange: (selection) {
-                                  if (selection.isEmpty) {
-                                    return;
-                                  }
+                ),
+                const SizedBox(height: 8),
+                const Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: _settingsHorizontalPadding,
+                  ),
+                  child: Text('Tùy chỉnh giao diện ứng dụng.'),
+                ),
+                const SizedBox(height: 24),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: _settingsHorizontalPadding,
+                  ),
+                  child: ValueListenableBuilder<AppThemeMode>(
+                    valueListenable: themeController,
+                    builder: (context, themeMode, _) {
+                      return FTileGroup(
+                        children: [
+                          FSelectMenuTile<AppThemeMode>(
+                            selectControl: FMultiValueControl.managedRadio(
+                              initial: themeMode,
+                              onChange: (selection) {
+                                if (selection.isEmpty) {
+                                  return;
+                                }
 
-                                  themeController.value = selection.first;
-                                },
-                              ),
-                              title: const Text('Giao diện'),
-                              subtitle: const Text(
-                                'Chọn chế độ sáng tối cho ứng dụng.',
-                              ),
-                              detailsBuilder: (_, values, _) {
-                                final selectedThemeMode =
-                                    values.isEmpty ? themeMode : values.first;
-
-                                return Text(
-                                  _themeModeLabel(selectedThemeMode),
-                                );
+                                themeController.value = selection.first;
                               },
-                              menu: const [
-                                FSelectTile<AppThemeMode>.suffix(
-                                  value: AppThemeMode.system,
-                                  prefix: SettingsLeadingIcon(
-                                    icon: CupertinoIcons.device_phone_portrait,
-                                    backgroundColor: Color(0xFF34C759),
-                                  ),
-                                  title: Text('Theo hệ thống'),
-                                  subtitle: Text(
-                                    'Tự động theo giao diện của thiết bị',
-                                  ),
-                                ),
-                                FSelectTile<AppThemeMode>.suffix(
-                                  value: AppThemeMode.dark,
-                                  prefix: SettingsLeadingIcon(
-                                    icon: CupertinoIcons.moon_fill,
-                                    backgroundColor: Color(0xFF5856D6),
-                                  ),
-                                  title: Text('Tối'),
-                                  subtitle: Text(
-                                    'Luôn dùng giao diện tối trong ứng dụng',
-                                  ),
-                                ),
-                                FSelectTile<AppThemeMode>.suffix(
-                                  value: AppThemeMode.light,
-                                  prefix: SettingsLeadingIcon(
-                                    icon: CupertinoIcons.sun_max_fill,
-                                    backgroundColor: Color(0xFFFF9F0A),
-                                  ),
-                                  title: Text('Sáng'),
-                                  subtitle: Text(
-                                    'Luôn dùng giao diện sáng trong ứng dụng',
-                                  ),
-                                ),
-                              ],
                             ),
-                          ],
-                        );
-                      },
-                    ),
+                            title: const Text('Giao diện'),
+                            subtitle: const Text(
+                              'Chọn chế độ sáng tối cho ứng dụng.',
+                            ),
+                            detailsBuilder: (_, values, _) {
+                              final selectedThemeMode = values.isEmpty
+                                  ? themeMode
+                                  : values.first;
+
+                              return Text(_themeModeLabel(selectedThemeMode));
+                            },
+                            menu: const [
+                              FSelectTile<AppThemeMode>.suffix(
+                                value: AppThemeMode.system,
+                                prefix: SettingsLeadingIcon(
+                                  icon: CupertinoIcons.device_phone_portrait,
+                                  backgroundColor: Color(0xFF34C759),
+                                ),
+                                title: Text('Theo hệ thống'),
+                                subtitle: Text(
+                                  'Tự động theo giao diện của thiết bị',
+                                ),
+                              ),
+                              FSelectTile<AppThemeMode>.suffix(
+                                value: AppThemeMode.dark,
+                                prefix: SettingsLeadingIcon(
+                                  icon: CupertinoIcons.moon_fill,
+                                  backgroundColor: Color(0xFF5856D6),
+                                ),
+                                title: Text('Tối'),
+                                subtitle: Text(
+                                  'Luôn dùng giao diện tối trong ứng dụng',
+                                ),
+                              ),
+                              FSelectTile<AppThemeMode>.suffix(
+                                value: AppThemeMode.light,
+                                prefix: SettingsLeadingIcon(
+                                  icon: CupertinoIcons.sun_max_fill,
+                                  backgroundColor: Color(0xFFFF9F0A),
+                                ),
+                                title: Text('Sáng'),
+                                subtitle: Text(
+                                  'Luôn dùng giao diện sáng trong ứng dụng',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
+            const Positioned(
+              left: _settingsHorizontalPadding,
+              top: 12,
+              child: PageBackButton(),
             ),
           ],
         ),

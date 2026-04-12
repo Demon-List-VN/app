@@ -6,12 +6,25 @@ class PageBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FButton(
-      variant: .ghost,
-      mainAxisSize: MainAxisSize.min,
-      prefix: const Icon(FIcons.chevronLeft),
-      onPress: () => Navigator.of(context).pop(),
-      child: const Text('Quay lại'),
+    final colors = FTheme.of(context).colors;
+
+    return Semantics(
+      button: true,
+      label: 'Quay lại',
+      child: GestureDetector(
+        onTap: () => Navigator.maybePop(context),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: colors.card,
+            shape: BoxShape.circle,
+            border: Border.all(color: colors.border),
+          ),
+          child: const SizedBox.square(
+            dimension: 44,
+            child: Center(child: Icon(FIcons.arrowLeft, size: 24)),
+          ),
+        ),
+      ),
     );
   }
 }
