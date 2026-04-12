@@ -23,11 +23,20 @@ class SettingsPage extends StatelessWidget {
     final themeController = AppThemeScope.of(context);
 
     return FScaffold(
+      header: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+          child: const Align(
+            alignment: Alignment.centerLeft,
+            child: PageBackButton(),
+          ),
+        ),
+      ),
       child: SafeArea(
-        child: Stack(
-          children: [
-            ListView(
-              padding: const EdgeInsets.fromLTRB(0, 72, 0, 24),
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.only(bottom: 24),
               children: [
                 const Padding(
                   padding: EdgeInsets.symmetric(
@@ -113,15 +122,9 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-            const Positioned(
-              left: _horizontalPadding,
-              top: 12,
-              child: PageBackButton(),
-            ),
-          ],
         ),
       ),
     );
   }
 }
+

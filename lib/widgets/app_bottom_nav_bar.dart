@@ -73,17 +73,6 @@ class AppBottomNavBar extends StatelessWidget {
     );
   }
 
-  static Widget getPage({
-    required int selectedIndex,
-    required List<NavItemConfig> leftItems,
-    required List<NavItemConfig> rightItems,
-  }) {
-    if (selectedIndex < actionButtonIndex) {
-      return leftItems[selectedIndex].page;
-    }
-    final rightIndex = selectedIndex - actionButtonIndex - 1;
-    return rightItems[rightIndex].page;
-  }
 }
 
 class _TransparentPlusButtonPainter extends CustomPainter {
