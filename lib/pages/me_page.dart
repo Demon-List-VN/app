@@ -20,22 +20,19 @@ class MePage extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.symmetric(vertical: 24),
           children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 0),
-              child: FTileGroup(
-                children: [
-                  FTile(
-                    prefix: SettingsLeadingIcon(
-                      icon: CupertinoIcons.gear_alt_fill,
-                      backgroundColor: Color(0xFF8E8E93),
-                    ),
-                    title: const Text('Cài đặt'),
-                    subtitle: const Text('Giao diện và các tuỳ chọn ứng dụng'),
-                    suffix: const Icon(FIcons.chevronRight),
-                    onPress: () => _openSettings(context),
+            FTileGroup(
+              children: [
+                FTile(
+                  prefix: SettingsLeadingIcon(
+                    icon: CupertinoIcons.gear_alt_fill,
+                    backgroundColor: Color(0xFF8E8E93),
                   ),
-                ],
-              ),
+                  title: const Text('Cài đặt'),
+                  subtitle: const Text('Giao diện và các tuỳ chọn ứng dụng'),
+                  suffix: const Icon(FIcons.chevronRight),
+                  onPress: () => _openSettings(context),
+                ),
+              ],
             ),
           ],
         ),
