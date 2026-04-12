@@ -19,7 +19,8 @@ Future<void> showSubmitSheet(
   await showFSheet<void>(
     context: context,
     side: FLayout.btt,
-    mainAxisMaxRatio: 0.9,
+    mainAxisMaxRatio: null,
+    draggable: false,
     style: const FModalSheetStyleDelta.delta(
       motion: FModalSheetMotionDelta.delta(
         expandDuration: Duration(milliseconds: 260),
@@ -64,133 +65,134 @@ class _SubmitSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: theme.colors.card,
-        border: Border.all(
-          color: theme.colors.border,
-          width: theme.style.borderWidth,
-        ),
-        borderRadius: _sheetBorderRadius,
-      ),
-      child: ClipRRect(
-        borderRadius: _sheetBorderRadius,
-        child: SafeArea(
-          top: false,
-          child: SizedBox(
-            height: MediaQuery.sizeOf(context).height * 0.9,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Center(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: theme.colors.border,
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: const SizedBox(width: 52, height: 4),
-                    ),
-                  ),
-                  const SizedBox(height: 18),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      DecoratedBox(
+    return DraggableScrollableSheet(
+      expand: false,
+      initialChildSize: 0.9,
+      minChildSize: 0,
+      maxChildSize: 1,
+      shouldCloseOnMinExtent: true,
+      builder: (context, scrollController) {
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            color: theme.colors.card,
+            border: Border.all(
+              color: theme.colors.border,
+              width: theme.style.borderWidth,
+            ),
+            borderRadius: _sheetBorderRadius,
+          ),
+          child: ClipRRect(
+            borderRadius: _sheetBorderRadius,
+            child: SafeArea(
+              top: false,
+              child: SingleChildScrollView(
+                controller: scrollController,
+                physics: const AlwaysScrollableScrollPhysics(
+                  parent: ClampingScrollPhysics(),
+                ),
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Center(
+                      child: DecoratedBox(
                         decoration: BoxDecoration(
-                          border: Border.all(
-                            color: theme.colors.border,
-                            width: theme.style.borderWidth,
+                          color: theme.colors.border,
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: const SizedBox(width: 52, height: 4),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: theme.colors.border,
+                              width: theme.style.borderWidth,
+                            ),
+                            borderRadius: BorderRadius.circular(18),
                           ),
-                          borderRadius: BorderRadius.circular(18),
+                          child: Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: Icon(icon),
+                          ),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(14),
-                          child: Icon(icon),
-                        ),
-                      ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              title,
-                              style: TextStyle(
-                                color: theme.colors.foreground,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                title,
+                                style: TextStyle(
+                                  color: theme.colors.foreground,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              subtitle,
-                              style: TextStyle(
-                                color: theme.colors.mutedForeground,
-                                fontSize: 14,
-                                height: 1.45,
+                              const SizedBox(height: 8),
+                              Text(
+                                subtitle,
+                                style: TextStyle(
+                                  color: theme.colors.mutedForeground,
+                                  fontSize: 14,
+                                  height: 1.45,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Expanded(
-                    child: SingleChildScrollView(
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    _SubmitSectionCard(
+                      title: placeholderTitle,
+                      description: placeholderDescription,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          _SubmitSectionCard(
-                            title: placeholderTitle,
-                            description: placeholderDescription,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: const [
-                                _PlaceholderField(label: 'Tên'),
-                                SizedBox(height: 12),
-                                _PlaceholderField(
-                                  label: 'Link video hoặc chứng cứ',
-                                ),
-                                SizedBox(height: 12),
-                                _PlaceholderField(
-                                  label: 'Ghi chú thêm',
-                                  lines: 4,
-                                ),
-                              ],
-                            ),
+                        children: const [
+                          _PlaceholderField(label: 'Tên'),
+                          SizedBox(height: 12),
+                          _PlaceholderField(
+                            label: 'Link video hoặc chứng cứ',
                           ),
-                          const SizedBox(height: 16),
-                          _SubmitSectionCard(
-                            title: 'Dialog placeholder',
-                            description:
-                                'Nút bên dưới mở một Forui dialog để giữ chỗ cho xác nhận, hướng dẫn hoặc trạng thái hoàn tất.',
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                FButton(
-                                  onPress: () => _showPlaceholderDialog(
-                                    context,
-                                    title: dialogTitle,
-                                    description: dialogDescription,
-                                  ),
-                                  child: const Text('Mở dialog placeholder'),
-                                ),
-                              ],
-                            ),
+                          SizedBox(height: 12),
+                          _PlaceholderField(
+                            label: 'Ghi chú thêm',
+                            lines: 4,
                           ),
                         ],
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 16),
+                    _SubmitSectionCard(
+                      title: 'Dialog placeholder',
+                      description:
+                          'Nút bên dưới mở một Forui dialog để giữ chỗ cho xác nhận, hướng dẫn hoặc trạng thái hoàn tất.',
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          FButton(
+                            onPress: () => _showPlaceholderDialog(
+                              context,
+                              title: dialogTitle,
+                              description: dialogDescription,
+                            ),
+                            child: const Text('Mở dialog placeholder'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
