@@ -21,11 +21,11 @@ class MePage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 24),
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: EdgeInsets.symmetric(horizontal: 10),
               child: FTileGroup(
                 children: [
                   FTile(
-                    prefix: const SettingsLeadingIcon(
+                    prefix: SettingsLeadingIcon(
                       icon: CupertinoIcons.gear_alt_fill,
                       backgroundColor: Color(0xFF8E8E93),
                     ),
