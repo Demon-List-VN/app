@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 
 import 'package:gdvn/pages/about_page.dart';
 import 'package:gdvn/pages/settings_page.dart';
+import 'package:gdvn/widgets/floating_page_header.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -139,173 +140,173 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     final results = _results;
+    final listTopPadding = floatingPageHeaderContentTopPadding(context);
 
-    return FScaffold(
-      header: FHeader.nested(
-        title: const Text('Tìm kiếm'),
-        prefixes: [
-          FHeaderAction.back(
-            onPress: () => Navigator.maybePop(context),
-            semanticsLabel: 'Quay lại',
-          ),
-        ],
+    return FloatingPageHeader(
+      title: 'Tìm kiếm',
+      leadingAction: FloatingPageHeaderAction(
+        icon: const Icon(CupertinoIcons.back),
+        onTap: () => Navigator.maybePop(context),
+        semanticsLabel: 'Quay lại',
       ),
-      child: SafeArea(
-        top: false,
-        child: ListView(
-          padding: const EdgeInsets.only(bottom: 24),
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: FTextField(
-                control: FTextFieldControl.managed(controller: _controller),
-                label: const Text('Tìm trong ứng dụng'),
-                hint: 'Cài đặt, giao diện, giới thiệu...',
-                description: const Text(
-                  'Mở nhanh các điểm đến quan trọng ngay từ thanh tìm kiếm.',
-                ),
-                textInputAction: TextInputAction.search,
-                autofocus: true,
-                clearable: (value) => value.text.isNotEmpty,
-                prefixBuilder: (context, style, variants) =>
-                    FTextField.prefixIconBuilder(
-                      context,
-                      style,
-                      variants,
-                      const Icon(FIcons.search),
-                    ),
-                onSubmit: _rememberQuery,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: FCard(
-                title: Text(
-                  _query.isEmpty
-                      ? 'Khám phá nhanh'
-                      : '${results.length} kết quả phù hợp',
-                ),
-                subtitle: Text(
-                  _query.isEmpty
-                      ? 'Bắt đầu từ những từ khóa thường dùng nhất.'
-                      : 'Đang lọc theo "${_controller.text.trim()}".',
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        FBadge(child: const Text('Cài đặt')),
-                        FBadge(
-                          variant: .secondary,
-                          child: const Text('Giới thiệu'),
-                        ),
-                        FBadge(variant: .outline, child: const Text('ForUI')),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        _QuickQueryButton(
-                          label: 'giao diện',
-                          onPress: () => _applyQuery('giao diện'),
-                        ),
-                        _QuickQueryButton(
-                          label: 'cài đặt',
-                          onPress: () => _applyQuery('cài đặt'),
-                        ),
-                        _QuickQueryButton(
-                          label: 'forui',
-                          onPress: () => _applyQuery('forui'),
-                        ),
-                        _QuickQueryButton(
-                          label: 'phiên bản',
-                          onPress: () => _applyQuery('phiên bản'),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Kết quả gợi ý',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: results.isEmpty
-                  ? FCard(
-                      title: const Text('Không có kết quả'),
-                      subtitle: const Text(
-                        'Hãy thử những từ khóa gần hơn với Cài đặt hoặc Giới thiệu.',
+      child: FScaffold(
+        child: SafeArea(
+          top: false,
+          child: ListView(
+            padding: EdgeInsets.fromLTRB(0, listTopPadding, 0, 24),
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: FTextField(
+                  control: FTextFieldControl.managed(controller: _controller),
+                  label: const Text('Tìm trong ứng dụng'),
+                  hint: 'Cài đặt, giao diện, giới thiệu...',
+                  description: const Text(
+                    'Mở nhanh các điểm đến quan trọng ngay từ thanh tìm kiếm.',
+                  ),
+                  textInputAction: TextInputAction.search,
+                  autofocus: true,
+                  clearable: (value) => value.text.isNotEmpty,
+                  prefixBuilder: (context, style, variants) =>
+                      FTextField.prefixIconBuilder(
+                        context,
+                        style,
+                        variants,
+                        const Icon(FIcons.search),
                       ),
-                      child: Wrap(
+                  onSubmit: _rememberQuery,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: FCard(
+                  title: Text(
+                    _query.isEmpty
+                        ? 'Khám phá nhanh'
+                        : '${results.length} kết quả phù hợp',
+                  ),
+                  subtitle: Text(
+                    _query.isEmpty
+                        ? 'Bắt đầu từ những từ khóa thường dùng nhất.'
+                        : 'Đang lọc theo "${_controller.text.trim()}".',
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
                         spacing: 8,
                         runSpacing: 8,
                         children: [
+                          FBadge(child: const Text('Cài đặt')),
+                          FBadge(
+                            variant: .secondary,
+                            child: const Text('Giới thiệu'),
+                          ),
+                          FBadge(variant: .outline, child: const Text('ForUI')),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          _QuickQueryButton(
+                            label: 'giao diện',
+                            onPress: () => _applyQuery('giao diện'),
+                          ),
                           _QuickQueryButton(
                             label: 'cài đặt',
                             onPress: () => _applyQuery('cài đặt'),
                           ),
                           _QuickQueryButton(
-                            label: 'giới thiệu',
-                            onPress: () => _applyQuery('giới thiệu'),
+                            label: 'forui',
+                            onPress: () => _applyQuery('forui'),
+                          ),
+                          _QuickQueryButton(
+                            label: 'phiên bản',
+                            onPress: () => _applyQuery('phiên bản'),
                           ),
                         ],
                       ),
-                    )
-                  : FTileGroup(
-                      children: results
-                          .map(
-                            (entry) => FTile(
-                              prefix: Icon(entry.icon),
-                              title: Text(entry.title),
-                              subtitle: Text(entry.subtitle),
-                              suffix: const Icon(FIcons.chevronRight),
-                              onPress: () => _openTarget(entry.target),
-                            ),
-                          )
-                          .toList(),
-                    ),
-            ),
-            if (_recentSearches.isNotEmpty) ...[
+                    ],
+                  ),
+                ),
+              ),
               const SizedBox(height: 24),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  'Tìm gần đây',
+                  'Kết quả gợi ý',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                 ),
               ),
               const SizedBox(height: 12),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: _recentSearches
-                      .map(
-                        (query) => _QuickQueryButton(
-                          label: query,
-                          onPress: () => _applyQuery(query),
+                child: results.isEmpty
+                    ? FCard(
+                        title: const Text('Không có kết quả'),
+                        subtitle: const Text(
+                          'Hãy thử những từ khóa gần hơn với Cài đặt hoặc Giới thiệu.',
+                        ),
+                        child: Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            _QuickQueryButton(
+                              label: 'cài đặt',
+                              onPress: () => _applyQuery('cài đặt'),
+                            ),
+                            _QuickQueryButton(
+                              label: 'giới thiệu',
+                              onPress: () => _applyQuery('giới thiệu'),
+                            ),
+                          ],
                         ),
                       )
-                      .toList(),
-                ),
+                    : FTileGroup(
+                        children: results
+                            .map(
+                              (entry) => FTile(
+                                prefix: Icon(entry.icon),
+                                title: Text(entry.title),
+                                subtitle: Text(entry.subtitle),
+                                suffix: const Icon(FIcons.chevronRight),
+                                onPress: () => _openTarget(entry.target),
+                              ),
+                            )
+                            .toList(),
+                      ),
               ),
+              if (_recentSearches.isNotEmpty) ...[
+                const SizedBox(height: 24),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    'Tìm gần đây',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: _recentSearches
+                        .map(
+                          (query) => _QuickQueryButton(
+                            label: query,
+                            onPress: () => _applyQuery(query),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

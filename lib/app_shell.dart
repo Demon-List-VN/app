@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 
 import 'package:gdvn/pages/about_page.dart';
 import 'package:gdvn/pages/dashboard_page.dart';
+import 'package:gdvn/widgets/floating_page_header.dart';
 import 'package:gdvn/pages/list_page.dart';
 import 'package:gdvn/pages/me_page.dart';
 import 'package:gdvn/pages/notification_page.dart';
@@ -105,27 +106,6 @@ class _AppShellState extends State<AppShell> {
     }
   }
 
-  Widget _buildRootHeader(int tabIndex) {
-    return FHeader.nested(
-      title: Text(_allItems[tabIndex].label),
-      titleAlignment: Alignment.centerLeft,
-      prefixes: [
-        FHeaderAction(
-          icon: const Icon(FIcons.menu),
-          onPress: _openSidebar,
-          semanticsLabel: 'Mở menu',
-        ),
-      ],
-      suffixes: [
-        FHeaderAction(
-          icon: const Icon(FIcons.search),
-          onPress: _openSearchPage,
-          semanticsLabel: 'Tìm kiếm',
-        ),
-      ],
-    );
-  }
-
   Future<void> _handleActionPressed() async {
     final action = await showActionBottomSheet(context);
     if (!mounted || action == null) {
@@ -167,9 +147,19 @@ class _AppShellState extends State<AppShell> {
               observers: [_observers[i]],
               onGenerateRoute: (settings) => CupertinoPageRoute<void>(
                 settings: settings,
-                builder: (context) => FScaffold(
-                  header: _buildRootHeader(i),
-                  child: _allItems[i].page,
+                builder: (context) => FloatingPageHeader(
+                  title: _allItems[i].label,
+                  leadingAction: FloatingPageHeaderAction(
+                    icon: const Icon(FIcons.menu),
+                    onTap: _openSidebar,
+                    semanticsLabel: 'Mở menu',
+                  ),
+                  trailingAction: FloatingPageHeaderAction(
+                    icon: const Icon(FIcons.search),
+                    onTap: _openSearchPage,
+                    semanticsLabel: 'Tìm kiếm',
+                  ),
+                  child: FScaffold(child: _allItems[i].page),
                 ),
               ),
             ),
