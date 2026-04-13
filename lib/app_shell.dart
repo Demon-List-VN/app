@@ -1,10 +1,12 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:forui/forui.dart';
 
+import 'package:gdvn/pages/about_page.dart';
 import 'package:gdvn/pages/dashboard_page.dart';
 import 'package:gdvn/pages/list_page.dart';
 import 'package:gdvn/pages/me_page.dart';
 import 'package:gdvn/pages/notification_page.dart';
+import 'package:gdvn/pages/search_page.dart';
 import 'package:gdvn/sheets/submit_level_challenge_sheet.dart';
 import 'package:gdvn/sheets/submit_record_sheet.dart';
 import 'package:gdvn/widgets/action_bottom_sheet.dart';
@@ -59,11 +61,69 @@ class _AppShellState extends State<AppShell> {
 
   bool get _currentCanPop => _canPops[_tabIndex];
 
+  NavigatorState? get _currentNavigator =>
+      _navigatorKeys[_tabIndex].currentState;
+
   void _onTabChanged(int tabIndex) {
     final canPop = _navigatorKeys[tabIndex].currentState?.canPop() ?? false;
     if (_canPops[tabIndex] != canPop) {
       setState(() => _canPops[tabIndex] = canPop);
     }
+  }
+
+  Future<void> _pushOnCurrentNavigator(Widget page) async {
+    final navigator = _currentNavigator;
+    if (navigator == null) {
+      return;
+    }
+
+    await navigator.push<void>(CupertinoPageRoute<void>(builder: (_) => page));
+  }
+
+  Future<void> _openAboutPage() => _pushOnCurrentNavigator(const AboutPage());
+
+  Future<void> _openSearchPage() => _pushOnCurrentNavigator(const SearchPage());
+
+  Future<void> _openSidebar() async {
+    final destination = await showFSheet<_SidebarDestination>(
+      context: context,
+      side: FLayout.ltr,
+      useSafeArea: false,
+      draggable: true,
+      mainAxisMaxRatio: 0.9,
+      builder: (sheetContext) =>
+          _AppSidebar(width: MediaQuery.sizeOf(sheetContext).width * 0.9),
+    );
+
+    if (!mounted || destination == null) {
+      return;
+    }
+
+    switch (destination) {
+      case _SidebarDestination.about:
+        await _openAboutPage();
+    }
+  }
+
+  Widget _buildRootHeader(int tabIndex) {
+    return FHeader.nested(
+      title: Text(_allItems[tabIndex].label),
+      titleAlignment: Alignment.centerLeft,
+      prefixes: [
+        FHeaderAction(
+          icon: const Icon(FIcons.menu),
+          onPress: _openSidebar,
+          semanticsLabel: 'Mở menu',
+        ),
+      ],
+      suffixes: [
+        FHeaderAction(
+          icon: const Icon(FIcons.search),
+          onPress: _openSearchPage,
+          semanticsLabel: 'Tìm kiếm',
+        ),
+      ],
+    );
   }
 
   Future<void> _handleActionPressed() async {
@@ -90,6 +150,7 @@ class _AppShellState extends State<AppShell> {
         }
       },
       child: FScaffold(
+        childPad: false,
         footer: AppBottomNavBar(
           selectedIndex: _selectedIndex,
           onItemSelected: (index) => setState(() => _selectedIndex = index),
@@ -104,9 +165,12 @@ class _AppShellState extends State<AppShell> {
             (i) => Navigator(
               key: _navigatorKeys[i],
               observers: [_observers[i]],
-              onGenerateRoute: (_) => PageRouteBuilder<void>(
-                pageBuilder: (_, __, ___) => _allItems[i].page,
-                transitionDuration: Duration.zero,
+              onGenerateRoute: (settings) => CupertinoPageRoute<void>(
+                settings: settings,
+                builder: (context) => FScaffold(
+                  header: _buildRootHeader(i),
+                  child: _allItems[i].page,
+                ),
               ),
             ),
           ),
@@ -136,4 +200,53 @@ class _TabNavigatorObserver extends NavigatorObserver {
   @override
   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) =>
       onChanged();
+}
+
+enum _SidebarDestination { about }
+
+class _AppSidebar extends StatelessWidget {
+  final double width;
+
+  const _AppSidebar({required this.width});
+
+  @override
+  Widget build(BuildContext context) {
+    final viewPadding = MediaQuery.viewPaddingOf(context);
+
+    return FSidebar(
+      style: FSidebarStyleDelta.delta(
+        constraints: BoxConstraints.tightFor(width: width),
+        headerPadding: EdgeInsetsGeometryDelta.value(
+          EdgeInsets.fromLTRB(0, viewPadding.top + 8, 0, 0),
+        ),
+        footerPadding: EdgeInsetsGeometryDelta.value(
+          EdgeInsets.fromLTRB(0, 0, 0, viewPadding.bottom + 8),
+        ),
+      ),
+      header: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'GDVN',
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+          ),
+          SizedBox(height: 4),
+          Text('Đi tới những mục chính của ứng dụng.'),
+        ],
+      ),
+      children: [
+        FSidebarGroup(
+          label: const Text('Điều hướng'),
+          children: [
+            FSidebarItem(
+              icon: const Icon(CupertinoIcons.info_circle_fill),
+              label: const Text('Giới thiệu'),
+              onPress: () =>
+                  Navigator.of(context).pop(_SidebarDestination.about),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 }

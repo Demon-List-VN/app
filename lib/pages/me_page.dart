@@ -15,27 +15,26 @@ class MePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FScaffold(
-      child: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 24),
-          children: [
-            FTileGroup(
-              children: [
-                FTile(
-                  prefix: SettingsLeadingIcon(
-                    icon: CupertinoIcons.gear_alt_fill,
-                    backgroundColor: Color(0xFF8E8E93),
-                  ),
-                  title: const Text('Cài đặt'),
-                  subtitle: const Text('Giao diện và các tuỳ chọn ứng dụng'),
-                  suffix: const Icon(FIcons.chevronRight),
-                  onPress: () => _openSettings(context),
+    return SafeArea(
+      top: false,
+      child: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        children: [
+          FTileGroup(
+            children: [
+              FTile(
+                prefix: SettingsLeadingIcon(
+                  icon: CupertinoIcons.gear_alt_fill,
+                  backgroundColor: Color(0xFF8E8E93),
                 ),
-              ],
-            ),
-          ],
-        ),
+                title: const Text('Cài đặt'),
+                subtitle: const Text('Giao diện và các tuỳ chọn ứng dụng'),
+                suffix: const Icon(FIcons.chevronRight),
+                onPress: () => _openSettings(context),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
