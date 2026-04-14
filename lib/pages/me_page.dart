@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:forui/forui.dart';
 
 import 'package:gdvn/pages/settings_page.dart';
+import 'package:gdvn/widgets/floating_page_header.dart';
 import 'package:gdvn/widgets/settings_group_card.dart';
 
 class MePage extends StatelessWidget {
@@ -15,26 +16,28 @@ class MePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      child: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 24),
-        children: [
-          FTileGroup(
-            children: [
-              FTile(
-                prefix: SettingsLeadingIcon(
-                  icon: CupertinoIcons.gear_alt_fill,
-                  backgroundColor: Color(0xFF8E8E93),
+    return FloatingPageHeaderContent(
+      child: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.only(bottom: 24),
+          children: [
+            FTileGroup(
+              children: [
+                FTile(
+                  prefix: SettingsLeadingIcon(
+                    icon: CupertinoIcons.gear_alt_fill,
+                    backgroundColor: Color(0xFF8E8E93),
+                  ),
+                  title: const Text('Cài đặt'),
+                  subtitle: const Text('Giao diện và các tuỳ chọn ứng dụng'),
+                  suffix: const Icon(FIcons.chevronRight),
+                  onPress: () => _openSettings(context),
                 ),
-                title: const Text('Cài đặt'),
-                subtitle: const Text('Giao diện và các tuỳ chọn ứng dụng'),
-                suffix: const Icon(FIcons.chevronRight),
-                onPress: () => _openSettings(context),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

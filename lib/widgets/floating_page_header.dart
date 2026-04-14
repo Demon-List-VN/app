@@ -17,6 +17,36 @@ double floatingPageHeaderContentTopPadding(
   return viewPadding.top + topGap + headerHeight + bottomSpacing;
 }
 
+class FloatingPageHeaderContent extends StatelessWidget {
+  final Widget child;
+  final double bottomSpacing;
+  final double topGap;
+  final double headerHeight;
+
+  const FloatingPageHeaderContent({
+    super.key,
+    required this.child,
+    this.bottomSpacing = floatingPageHeaderBottomSpacing,
+    this.topGap = floatingPageHeaderTopGap,
+    this.headerHeight = floatingPageHeaderHeight,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: floatingPageHeaderContentTopPadding(
+          context,
+          bottomSpacing: bottomSpacing,
+          topGap: topGap,
+          headerHeight: headerHeight,
+        ),
+      ),
+      child: child,
+    );
+  }
+}
+
 class FloatingPageHeaderAction {
   final Widget icon;
   final VoidCallback onTap;
@@ -186,5 +216,3 @@ class _FloatingPageHeaderButton extends StatelessWidget {
     );
   }
 }
-
-

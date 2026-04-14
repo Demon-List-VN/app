@@ -6,25 +6,25 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: EdgeInsets.fromLTRB(
-        16,
-        floatingPageHeaderContentTopPadding(context),
-        16,
-        24,
-      ),
-      itemCount: 30,
-      itemBuilder: (context, index) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Container(
-          height: 64,
-          decoration: BoxDecoration(
-            color: const Color(0xFF888888).withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(10),
+    return FloatingPageHeaderContent(
+      child: ListView.builder(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+        itemCount: 30,
+        itemBuilder: (context, index) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Container(
+            height: 64,
+            decoration: BoxDecoration(
+              color: const Color(0xFF888888).withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              'Mục ${index + 1}',
+              style: const TextStyle(fontSize: 15),
+            ),
           ),
-          alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text('Mục ${index + 1}', style: const TextStyle(fontSize: 15)),
         ),
       ),
     );
