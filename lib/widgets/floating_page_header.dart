@@ -4,30 +4,26 @@ import 'package:forui/forui.dart';
 const double floatingPageHeaderHeight = 44;
 const double floatingPageHeaderHorizontalInset = 12;
 const double floatingPageHeaderSpacing = 10;
-const double floatingPageHeaderTopGap = 10;
 const double floatingPageHeaderBottomSpacing = 18;
 
 double floatingPageHeaderContentTopPadding(
   BuildContext context, {
   double bottomSpacing = floatingPageHeaderBottomSpacing,
-  double topGap = floatingPageHeaderTopGap,
   double headerHeight = floatingPageHeaderHeight,
 }) {
   final viewPadding = MediaQuery.viewPaddingOf(context);
-  return viewPadding.top + topGap + headerHeight + bottomSpacing;
+  return viewPadding.top + headerHeight + bottomSpacing;
 }
 
 class FloatingPageHeaderContent extends StatelessWidget {
   final Widget child;
   final double bottomSpacing;
-  final double topGap;
   final double headerHeight;
 
   const FloatingPageHeaderContent({
     super.key,
     required this.child,
     this.bottomSpacing = floatingPageHeaderBottomSpacing,
-    this.topGap = floatingPageHeaderTopGap,
     this.headerHeight = floatingPageHeaderHeight,
   });
 
@@ -38,7 +34,6 @@ class FloatingPageHeaderContent extends StatelessWidget {
         top: floatingPageHeaderContentTopPadding(
           context,
           bottomSpacing: bottomSpacing,
-          topGap: topGap,
           headerHeight: headerHeight,
         ),
       ),
@@ -62,26 +57,22 @@ class FloatingPageHeaderAction {
 class FloatingPageHeader extends StatelessWidget {
   final Widget child;
   final FloatingPageHeaderAction? leadingAction;
-  final FloatingPageHeaderAction? trailingAction;
+  final Widget? rightButtonIcon;
+  final VoidCallback? rightButtonAction;
   final String? title;
-  final Widget? titleContent;
-  final double horizontalInset;
-  final double spacing;
-  final double topGap;
+  final Widget? titleDropdown;
 
   const FloatingPageHeader({
     super.key,
     required this.child,
     this.leadingAction,
-    this.trailingAction,
+    this.rightButtonIcon,
+    this.rightButtonAction,
     this.title,
-    this.titleContent,
-    this.horizontalInset = floatingPageHeaderHorizontalInset,
-    this.spacing = floatingPageHeaderSpacing,
-    this.topGap = floatingPageHeaderTopGap,
+    this.titleDropdown,
   }) : assert(
-         title == null || titleContent == null,
-         'Provide either title or titleContent, not both.',
+         title == null || titleDropdown == null,
+         'Provide either title or titleDropdown, not both.',
        );
 
   @override
@@ -94,16 +85,16 @@ class FloatingPageHeader extends StatelessWidget {
       fontWeight: FontWeight.w700,
       letterSpacing: -0.2,
     );
-    final resolvedTitle = titleContent ??
-        (title == null ? null : Text(title!));
+    final resolvedTitle =
+        titleDropdown ?? (title == null ? null : Text(title!));
 
     return Stack(
       children: [
         child,
         Positioned(
-          top: viewPadding.top + topGap,
-          left: horizontalInset,
-          right: horizontalInset,
+          top: viewPadding.top,
+          left: floatingPageHeaderHorizontalInset,
+          right: floatingPageHeaderHorizontalInset,
           child: SizedBox(
             height: floatingPageHeaderHeight,
             child: Stack(
@@ -118,8 +109,9 @@ class FloatingPageHeader extends StatelessWidget {
                       borderColor: colors.border,
                       iconColor: colors.foreground,
                     ),
-                    _FloatingPageHeaderActionSlot(
-                      action: trailingAction,
+                    _FloatingPageHeaderIconSlot(
+                      icon: rightButtonIcon,
+                      onTap: rightButtonAction,
                       backgroundColor: colors.card,
                       borderColor: colors.border,
                       iconColor: colors.foreground,
@@ -129,7 +121,8 @@ class FloatingPageHeader extends StatelessWidget {
                 if (resolvedTitle != null)
                   Padding(
                     padding: EdgeInsets.symmetric(
-                      horizontal: floatingPageHeaderHeight + spacing,
+                      horizontal:
+                          floatingPageHeaderHeight + floatingPageHeaderSpacing,
                     ),
                     child: Center(
                       child: DefaultTextStyle(
@@ -186,12 +179,44 @@ class _FloatingPageHeaderActionSlot extends StatelessWidget {
   }
 }
 
+class _FloatingPageHeaderIconSlot extends StatelessWidget {
+  final Widget? icon;
+  final VoidCallback? onTap;
+  final Color backgroundColor;
+  final Color borderColor;
+  final Color iconColor;
+
+  const _FloatingPageHeaderIconSlot({
+    required this.icon,
+    required this.onTap,
+    required this.backgroundColor,
+    required this.borderColor,
+    required this.iconColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final icon = this.icon;
+    if (icon == null) {
+      return const SizedBox.square(dimension: floatingPageHeaderHeight);
+    }
+
+    return _FloatingPageHeaderButton(
+      icon: icon,
+      backgroundColor: backgroundColor,
+      borderColor: borderColor,
+      iconColor: iconColor,
+      onTap: onTap,
+    );
+  }
+}
+
 class _FloatingPageHeaderButton extends StatelessWidget {
   final Widget icon;
   final Color backgroundColor;
   final Color borderColor;
   final Color iconColor;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final String? semanticsLabel;
 
   const _FloatingPageHeaderButton({

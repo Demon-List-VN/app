@@ -41,11 +41,8 @@ class _SettingsPageState extends State<SettingsPage> {
         onTap: () => Navigator.maybePop(context),
         semanticsLabel: 'Quay lại',
       ),
-      trailingAction: FloatingPageHeaderAction(
-        icon: const Icon(CupertinoIcons.info),
-        onTap: _openAboutPage,
-        semanticsLabel: 'Giới thiệu',
-      ),
+      rightButtonIcon: const Icon(CupertinoIcons.info),
+      rightButtonAction: _openAboutPage,
       child: FScaffold(
         child: FloatingPageHeaderContent(
           child: SafeArea(

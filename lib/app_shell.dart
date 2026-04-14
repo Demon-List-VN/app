@@ -156,35 +156,29 @@ class _AppShellState extends State<AppShell> {
         ),
         child: IndexedStack(
           index: _tabIndex,
-          children: List.generate(
-            _allItems.length,
-            (i) {
-              final item = _allItems[i];
+          children: List.generate(_allItems.length, (i) {
+            final item = _allItems[i];
 
-              return Navigator(
+            return Navigator(
               key: _navigatorKeys[i],
               observers: [_observers[i]],
               onGenerateRoute: (settings) => CupertinoPageRoute<void>(
                 settings: settings,
                 builder: (context) => FloatingPageHeader(
                   title: item.headerTitleBuilder == null ? item.label : null,
-                  titleContent: item.headerTitleBuilder?.call(context),
+                  titleDropdown: item.headerTitleBuilder?.call(context),
                   leadingAction: FloatingPageHeaderAction(
                     icon: const Icon(FIcons.menu),
                     onTap: _openSidebar,
                     semanticsLabel: 'Mở menu',
                   ),
-                  trailingAction: FloatingPageHeaderAction(
-                    icon: const Icon(FIcons.search),
-                    onTap: _openSearchPage,
-                    semanticsLabel: 'Tìm kiếm',
-                  ),
+                  rightButtonIcon: const Icon(FIcons.search),
+                  rightButtonAction: _openSearchPage,
                   child: FScaffold(child: item.page),
                 ),
               ),
             );
-            },
-          ),
+          }),
         ),
       ),
     );
