@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:forui/forui.dart';
 
-import 'package:gdvn/widgets/floating_page_header.dart';
+import 'package:gdvn/widgets/top_bar.dart';
 
 enum ListPageVariant {
   classic,
@@ -19,17 +19,14 @@ enum ListPageVariant {
 class ListPage extends StatelessWidget {
   final ValueListenable<ListPageVariant> variantListenable;
 
-  const ListPage({
-    super.key,
-    required this.variantListenable,
-  });
+  const ListPage({super.key, required this.variantListenable});
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<ListPageVariant>(
       valueListenable: variantListenable,
       builder: (context, variant, _) {
-        return FloatingPageHeaderContent(
+        return TopBarContent(
           child: SafeArea(
             top: false,
             child: Center(
@@ -51,10 +48,7 @@ class ListPage extends StatelessWidget {
 class ListPageHeaderVariantSwitcher extends StatelessWidget {
   final ValueNotifier<ListPageVariant> controller;
 
-  const ListPageHeaderVariantSwitcher({
-    super.key,
-    required this.controller,
-  });
+  const ListPageHeaderVariantSwitcher({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -66,10 +60,8 @@ class ListPageHeaderVariantSwitcher extends StatelessWidget {
           childAnchor: Alignment.bottomCenter,
           offset: const Offset(0, 4),
           semanticsLabel: 'Chọn biến thể danh sách',
-          builder: (context, popoverController, child) => FTappable(
-            onPress: popoverController.toggle,
-            child: child,
-          ),
+          builder: (context, popoverController, child) =>
+              FTappable(onPress: popoverController.toggle, child: child),
           menuBuilder: (context, popoverController, _) {
             return [
               FTileGroup(
@@ -79,9 +71,7 @@ class ListPageHeaderVariantSwitcher extends StatelessWidget {
                       (variant) => FTile(
                         title: Text(
                           variant.label,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w400,
-                          ),
+                          style: const TextStyle(fontWeight: FontWeight.w400),
                         ),
                         onPress: () {
                           if (controller.value != variant) {

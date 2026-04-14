@@ -3,7 +3,7 @@ import 'package:forui/forui.dart';
 
 import 'package:gdvn/pages/about_page.dart';
 import 'package:gdvn/pages/dashboard_page.dart';
-import 'package:gdvn/widgets/floating_page_header.dart';
+import 'package:gdvn/widgets/top_bar.dart';
 import 'package:gdvn/pages/list_page.dart';
 import 'package:gdvn/pages/me_page.dart';
 import 'package:gdvn/pages/notification_page.dart';
@@ -164,10 +164,10 @@ class _AppShellState extends State<AppShell> {
               observers: [_observers[i]],
               onGenerateRoute: (settings) => CupertinoPageRoute<void>(
                 settings: settings,
-                builder: (context) => FloatingPageHeader(
+                builder: (context) => TopBar(
                   title: item.headerTitleBuilder == null ? item.label : null,
                   titleDropdown: item.headerTitleBuilder?.call(context),
-                  leadingAction: FloatingPageHeaderAction(
+                  leadingAction: TopBarAction(
                     icon: const Icon(FIcons.menu),
                     onTap: _openSidebar,
                     semanticsLabel: 'Mở menu',

@@ -1,22 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:forui/forui.dart';
 
-import 'package:gdvn/widgets/floating_page_header.dart';
+import 'package:gdvn/widgets/top_bar.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return FloatingPageHeader(
+    return TopBar(
       title: 'Giới thiệu',
-      leadingAction: FloatingPageHeaderAction(
+      leadingAction: TopBarAction(
         icon: const Icon(CupertinoIcons.back),
         onTap: () => Navigator.maybePop(context),
         semanticsLabel: 'Quay lại',
       ),
       child: FScaffold(
-        child: FloatingPageHeaderContent(
+        child: TopBarContent(
           child: SafeArea(
             top: false,
             child: ListView(

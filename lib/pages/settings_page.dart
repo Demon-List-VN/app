@@ -3,10 +3,9 @@ import 'package:forui/forui.dart';
 
 import 'package:gdvn/pages/about_page.dart';
 import 'package:gdvn/theme/app_theme.dart';
-import 'package:gdvn/widgets/floating_page_header.dart';
+import 'package:gdvn/widgets/page_content_container.dart';
+import 'package:gdvn/widgets/top_bar.dart';
 import 'package:gdvn/widgets/settings_group_card.dart';
-
-const double _horizontalPadding = 10;
 
 String _themeModeLabel(AppThemeMode themeMode) {
   return switch (themeMode) {
@@ -34,9 +33,9 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     final themeController = AppThemeScope.of(context);
 
-    return FloatingPageHeader(
+    return TopBar(
       title: 'Cài đặt',
-      leadingAction: FloatingPageHeaderAction(
+      leadingAction: TopBarAction(
         icon: const Icon(CupertinoIcons.back),
         onTap: () => Navigator.maybePop(context),
         semanticsLabel: 'Quay lại',
@@ -44,16 +43,13 @@ class _SettingsPageState extends State<SettingsPage> {
       rightButtonIcon: const Icon(CupertinoIcons.info),
       rightButtonAction: _openAboutPage,
       child: FScaffold(
-        child: FloatingPageHeaderContent(
+        child: TopBarContent(
           child: SafeArea(
             top: false,
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
+              padding: const EdgeInsets.only(bottom: 24),
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: _horizontalPadding,
-                  ),
+                PageContentContainer(
                   child: ValueListenableBuilder<AppThemeMode>(
                     valueListenable: themeController,
                     builder: (context, themeMode, _) {

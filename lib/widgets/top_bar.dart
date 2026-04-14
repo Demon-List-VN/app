@@ -1,40 +1,40 @@
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 
-const double floatingPageHeaderHeight = 44;
-const double floatingPageHeaderHorizontalInset = 12;
-const double floatingPageHeaderSpacing = 10;
-const double floatingPageHeaderBottomSpacing = 18;
+const double topBarHeight = 44;
+const double topBarHorizontalInset = 12;
+const double topBarSpacing = 10;
+const double topBarBottomSpacing = 18;
 
-double floatingPageHeaderContentTopPadding(
+double topBarContentTopPadding(
   BuildContext context, {
-  double bottomSpacing = floatingPageHeaderBottomSpacing,
-  double headerHeight = floatingPageHeaderHeight,
+  double bottomSpacing = topBarBottomSpacing,
+  double height = topBarHeight,
 }) {
   final viewPadding = MediaQuery.viewPaddingOf(context);
-  return viewPadding.top + headerHeight + bottomSpacing;
+  return viewPadding.top + height + bottomSpacing;
 }
 
-class FloatingPageHeaderContent extends StatelessWidget {
+class TopBarContent extends StatelessWidget {
   final Widget child;
   final double bottomSpacing;
-  final double headerHeight;
+  final double height;
 
-  const FloatingPageHeaderContent({
+  const TopBarContent({
     super.key,
     required this.child,
-    this.bottomSpacing = floatingPageHeaderBottomSpacing,
-    this.headerHeight = floatingPageHeaderHeight,
+    this.bottomSpacing = topBarBottomSpacing,
+    this.height = topBarHeight,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        top: floatingPageHeaderContentTopPadding(
+        top: topBarContentTopPadding(
           context,
           bottomSpacing: bottomSpacing,
-          headerHeight: headerHeight,
+          height: height,
         ),
       ),
       child: child,
@@ -42,27 +42,27 @@ class FloatingPageHeaderContent extends StatelessWidget {
   }
 }
 
-class FloatingPageHeaderAction {
+class TopBarAction {
   final Widget icon;
   final VoidCallback onTap;
   final String? semanticsLabel;
 
-  const FloatingPageHeaderAction({
+  const TopBarAction({
     required this.icon,
     required this.onTap,
     this.semanticsLabel,
   });
 }
 
-class FloatingPageHeader extends StatelessWidget {
+class TopBar extends StatelessWidget {
   final Widget child;
-  final FloatingPageHeaderAction? leadingAction;
+  final TopBarAction? leadingAction;
   final Widget? rightButtonIcon;
   final VoidCallback? rightButtonAction;
   final String? title;
   final Widget? titleDropdown;
 
-  const FloatingPageHeader({
+  const TopBar({
     super.key,
     required this.child,
     this.leadingAction,
@@ -93,23 +93,23 @@ class FloatingPageHeader extends StatelessWidget {
         child,
         Positioned(
           top: viewPadding.top,
-          left: floatingPageHeaderHorizontalInset,
-          right: floatingPageHeaderHorizontalInset,
+          left: topBarHorizontalInset,
+          right: topBarHorizontalInset,
           child: SizedBox(
-            height: floatingPageHeaderHeight,
+            height: topBarHeight,
             child: Stack(
               alignment: Alignment.center,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _FloatingPageHeaderActionSlot(
+                    _TopBarActionSlot(
                       action: leadingAction,
                       backgroundColor: colors.card,
                       borderColor: colors.border,
                       iconColor: colors.foreground,
                     ),
-                    _FloatingPageHeaderIconSlot(
+                    _TopBarIconSlot(
                       icon: rightButtonIcon,
                       onTap: rightButtonAction,
                       backgroundColor: colors.card,
@@ -121,8 +121,7 @@ class FloatingPageHeader extends StatelessWidget {
                 if (resolvedTitle != null)
                   Padding(
                     padding: EdgeInsets.symmetric(
-                      horizontal:
-                          floatingPageHeaderHeight + floatingPageHeaderSpacing,
+                      horizontal: topBarHeight + topBarSpacing,
                     ),
                     child: Center(
                       child: DefaultTextStyle(
@@ -148,13 +147,13 @@ class FloatingPageHeader extends StatelessWidget {
   }
 }
 
-class _FloatingPageHeaderActionSlot extends StatelessWidget {
-  final FloatingPageHeaderAction? action;
+class _TopBarActionSlot extends StatelessWidget {
+  final TopBarAction? action;
   final Color backgroundColor;
   final Color borderColor;
   final Color iconColor;
 
-  const _FloatingPageHeaderActionSlot({
+  const _TopBarActionSlot({
     required this.action,
     required this.backgroundColor,
     required this.borderColor,
@@ -165,10 +164,10 @@ class _FloatingPageHeaderActionSlot extends StatelessWidget {
   Widget build(BuildContext context) {
     final action = this.action;
     if (action == null) {
-      return const SizedBox.square(dimension: floatingPageHeaderHeight);
+      return const SizedBox.square(dimension: topBarHeight);
     }
 
-    return _FloatingPageHeaderButton(
+    return _TopBarButton(
       icon: action.icon,
       backgroundColor: backgroundColor,
       borderColor: borderColor,
@@ -179,14 +178,14 @@ class _FloatingPageHeaderActionSlot extends StatelessWidget {
   }
 }
 
-class _FloatingPageHeaderIconSlot extends StatelessWidget {
+class _TopBarIconSlot extends StatelessWidget {
   final Widget? icon;
   final VoidCallback? onTap;
   final Color backgroundColor;
   final Color borderColor;
   final Color iconColor;
 
-  const _FloatingPageHeaderIconSlot({
+  const _TopBarIconSlot({
     required this.icon,
     required this.onTap,
     required this.backgroundColor,
@@ -198,10 +197,10 @@ class _FloatingPageHeaderIconSlot extends StatelessWidget {
   Widget build(BuildContext context) {
     final icon = this.icon;
     if (icon == null) {
-      return const SizedBox.square(dimension: floatingPageHeaderHeight);
+      return const SizedBox.square(dimension: topBarHeight);
     }
 
-    return _FloatingPageHeaderButton(
+    return _TopBarButton(
       icon: icon,
       backgroundColor: backgroundColor,
       borderColor: borderColor,
@@ -211,7 +210,7 @@ class _FloatingPageHeaderIconSlot extends StatelessWidget {
   }
 }
 
-class _FloatingPageHeaderButton extends StatelessWidget {
+class _TopBarButton extends StatelessWidget {
   final Widget icon;
   final Color backgroundColor;
   final Color borderColor;
@@ -219,7 +218,7 @@ class _FloatingPageHeaderButton extends StatelessWidget {
   final VoidCallback? onTap;
   final String? semanticsLabel;
 
-  const _FloatingPageHeaderButton({
+  const _TopBarButton({
     required this.icon,
     required this.backgroundColor,
     required this.borderColor,
@@ -237,8 +236,8 @@ class _FloatingPageHeaderButton extends StatelessWidget {
         onTap: onTap,
         behavior: HitTestBehavior.opaque,
         child: Container(
-          width: floatingPageHeaderHeight,
-          height: floatingPageHeaderHeight,
+          width: topBarHeight,
+          height: topBarHeight,
           decoration: BoxDecoration(
             color: backgroundColor,
             shape: BoxShape.circle,

@@ -3,7 +3,7 @@ import 'package:forui/forui.dart';
 
 import 'package:gdvn/pages/about_page.dart';
 import 'package:gdvn/pages/settings_page.dart';
-import 'package:gdvn/widgets/floating_page_header.dart';
+import 'package:gdvn/widgets/top_bar.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -141,15 +141,15 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     final results = _results;
 
-    return FloatingPageHeader(
+    return TopBar(
       title: 'Tìm kiếm',
-      leadingAction: FloatingPageHeaderAction(
+      leadingAction: TopBarAction(
         icon: const Icon(CupertinoIcons.back),
         onTap: () => Navigator.maybePop(context),
         semanticsLabel: 'Quay lại',
       ),
       child: FScaffold(
-        child: FloatingPageHeaderContent(
+        child: TopBarContent(
           child: SafeArea(
             top: false,
             child: ListView(
