@@ -64,6 +64,7 @@ class FloatingPageHeader extends StatelessWidget {
   final FloatingPageHeaderAction? leadingAction;
   final FloatingPageHeaderAction? trailingAction;
   final String? title;
+  final Widget? titleContent;
   final double horizontalInset;
   final double spacing;
   final double topGap;
@@ -74,15 +75,27 @@ class FloatingPageHeader extends StatelessWidget {
     this.leadingAction,
     this.trailingAction,
     this.title,
+    this.titleContent,
     this.horizontalInset = floatingPageHeaderHorizontalInset,
     this.spacing = floatingPageHeaderSpacing,
     this.topGap = floatingPageHeaderTopGap,
-  });
+  }) : assert(
+         title == null || titleContent == null,
+         'Provide either title or titleContent, not both.',
+       );
 
   @override
   Widget build(BuildContext context) {
     final viewPadding = MediaQuery.viewPaddingOf(context);
     final colors = FTheme.of(context).colors;
+    final titleStyle = TextStyle(
+      color: colors.foreground,
+      fontSize: 15,
+      fontWeight: FontWeight.w700,
+      letterSpacing: -0.2,
+    );
+    final resolvedTitle = titleContent ??
+        (title == null ? null : Text(title!));
 
     return Stack(
       children: [
@@ -113,21 +126,22 @@ class FloatingPageHeader extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (title != null)
+                if (resolvedTitle != null)
                   Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: floatingPageHeaderHeight + spacing,
                     ),
                     child: Center(
-                      child: Text(
-                        title!,
+                      child: DefaultTextStyle(
+                        style: titleStyle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: colors.foreground,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: -0.2,
+                        child: IconTheme(
+                          data: IconThemeData(
+                            color: colors.foreground,
+                            size: 14,
+                          ),
+                          child: resolvedTitle,
                         ),
                       ),
                     ),

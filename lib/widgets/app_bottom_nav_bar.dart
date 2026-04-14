@@ -5,11 +5,13 @@ class NavItemConfig {
   final IconData icon;
   final String label;
   final Widget page;
+  final WidgetBuilder? headerTitleBuilder;
 
   const NavItemConfig({
     required this.icon,
     required this.label,
     required this.page,
+    this.headerTitleBuilder,
   });
 }
 

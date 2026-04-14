@@ -23,27 +23,37 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0;
 
-  static const _leftItems = [
-    NavItemConfig(
+  final ValueNotifier<ListPageVariant> _listVariant = ValueNotifier(
+    ListPageVariant.classic,
+  );
+
+  late final List<NavItemConfig> _leftItems = [
+    const NavItemConfig(
       icon: FIcons.layoutDashboard,
       label: 'Trang chủ',
       page: DashboardPage(),
     ),
-    NavItemConfig(icon: FIcons.list, label: 'List', page: ListPage()),
+    NavItemConfig(
+      icon: FIcons.list,
+      label: 'List',
+      page: ListPage(variantListenable: _listVariant),
+      headerTitleBuilder: (_) =>
+          ListPageHeaderVariantSwitcher(controller: _listVariant),
+    ),
   ];
 
-  static const _rightItems = [
-    NavItemConfig(
+  late final List<NavItemConfig> _rightItems = [
+    const NavItemConfig(
       icon: FIcons.bell,
       label: 'Thông báo',
       page: NotificationPage(),
     ),
-    NavItemConfig(icon: FIcons.user, label: 'Tôi', page: MePage()),
+    const NavItemConfig(icon: FIcons.user, label: 'Tôi', page: MePage()),
   ];
 
-  static const _allItems = [..._leftItems, ..._rightItems];
+  late final List<NavItemConfig> _allItems = [..._leftItems, ..._rightItems];
 
-  final _navigatorKeys = List.generate(
+  late final _navigatorKeys = List.generate(
     _allItems.length,
     (_) => GlobalKey<NavigatorState>(),
   );
@@ -53,7 +63,7 @@ class _AppShellState extends State<AppShell> {
     (i) => _TabNavigatorObserver(onChanged: () => _onTabChanged(i)),
   );
 
-  final _canPops = List.filled(_allItems.length, false);
+  late final _canPops = List.filled(_allItems.length, false);
 
   /// Maps the bottom nav [_selectedIndex] (which includes the action button slot)
   /// to a 0-based tab index into [_allItems].
@@ -121,6 +131,12 @@ class _AppShellState extends State<AppShell> {
   }
 
   @override
+  void dispose() {
+    _listVariant.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: !_currentCanPop,
@@ -142,13 +158,17 @@ class _AppShellState extends State<AppShell> {
           index: _tabIndex,
           children: List.generate(
             _allItems.length,
-            (i) => Navigator(
+            (i) {
+              final item = _allItems[i];
+
+              return Navigator(
               key: _navigatorKeys[i],
               observers: [_observers[i]],
               onGenerateRoute: (settings) => CupertinoPageRoute<void>(
                 settings: settings,
                 builder: (context) => FloatingPageHeader(
-                  title: _allItems[i].label,
+                  title: item.headerTitleBuilder == null ? item.label : null,
+                  titleContent: item.headerTitleBuilder?.call(context),
                   leadingAction: FloatingPageHeaderAction(
                     icon: const Icon(FIcons.menu),
                     onTap: _openSidebar,
@@ -159,10 +179,11 @@ class _AppShellState extends State<AppShell> {
                     onTap: _openSearchPage,
                     semanticsLabel: 'Tìm kiếm',
                   ),
-                  child: FScaffold(child: _allItems[i].page),
+                  child: FScaffold(child: item.page),
                 ),
               ),
-            ),
+            );
+            },
           ),
         ),
       ),
